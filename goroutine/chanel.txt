@@ -1,0 +1,30 @@
+ch := make(chan int, 1)
+
+	ch <- 10
+	ch <- 20
+	ch <- 30
+	close(ch)
+
+	// go func() {
+	// 	defer close(ch)
+	// 	ch <- 10
+	// 	ch <- 20
+	// 	ch <- 30
+	// }()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	// //Goroutine anonymous
+	go func() {
+		defer wg.Done()
+		fmt.Println(<-ch)
+		fmt.Println(<-ch)
+		fmt.Println(<-ch)
+	}()
+
+	//xử dụng for range thì ta không cần sử dụng waitgroup
+	//vì for range đã đảm bảo đồng bộ tự nhiên giữa hai group
+	// for val := range ch {
+	// 	fmt.Println(val)
+	// }
+	wg.Wait()

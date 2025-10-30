@@ -1,0 +1,36 @@
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func task(id int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	fmt.Printf("Task %d start \n", id)
+	time.Sleep(1 * time.Second)
+	fmt.Printf("Task %d finish \n", id)
+}
+
+func main() {
+
+	start := time.Now()
+
+	// count += 1
+	// go task(1) //Goroutine chay dong thoi voi main, nên nếu sử dụng Goroutine thì nó sẽ thực thi 2s
+	// count += 1
+	// go task(2) // Còn nếu không sử dụng Goroutine thì nó sẽ thực thi 7s
+	// count += 1
+	// go task(4) // Nếu hàm main() kết thúc, tất cả Goroutine cũng bị dừng, ngay cả khi chúng thực thi chưa xong
+	// count += 1
+	// go task(5)
+
+	var wg sync.WaitGroup
+
+	for i := 1; i <= 5; i++ {
+		wg.Add(1)
+		go task(i, &wg)
+	}
+
+	fmt.Println("All time finish: ", time.Since(start))
+
+}
